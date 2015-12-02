@@ -2,6 +2,14 @@
 A better way to synthesize literature
 
 # installation
-```npm install```
-```node server```
-```http://localhost:3000/```
+Node should be installed. Next install npm packages:
+    
+    npm install
+
+Then start the local server
+
+    node server
+
+And open your web browser
+
+    http://localhost:3000/
