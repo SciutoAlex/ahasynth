@@ -1,0 +1,23 @@
+{
+  "name": "ahasynth",
+  "version": "1.0.0",
+  "description": "A new way to synthesize literature",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SciutoAlex/ahasynth"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SciutoAlex/ahasynth/issues"
+  },
+  "homepage": "https://github.com/SciutoAlex/ahasynth",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
