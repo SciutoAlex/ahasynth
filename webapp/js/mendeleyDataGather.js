@@ -55,6 +55,7 @@ var mendeleyConnection = function() {
 			var documents = results[1];
 			var docIds = documents.map(function(doc) { return doc.id})
 			var folderSpecificAnnotations = allAnnotations.filter(function(note) { return docIds.indexOf(note.document_id) != -1 })
+			folderSpecificAnnotations = processTextInformationForAnnotations(folderSpecificAnnotations)
 			setTimeout(function() {
 				nextFunction({
 					allAnnotations : allAnnotations,
@@ -67,6 +68,52 @@ var mendeleyConnection = function() {
 			
 		});
 	}
+	
+	var processTextInformationForAnnotations = function(folderSpecificAnnotations) {
+		return folderSpecificAnnotations.map(function(note) {
+			var processedInfo = processTexStringForHashTags(note.text)
+			note.category = processedInfo.category;
+			note.importance = processedInfo.importance;
+			note.annotations = processedInfo.text;
+			note.source = processedInfo.sourceText;
+			return note;
+		})
+	}
+	
+	var processTexStringForHashTags = function(str) {
+		var equalsList = str.match(/={4,}/)
+		splitSourceComments = str.split(equalsList);
+		if(splitSourceComments.length > 1) {
+			var sourceText = splitSourceComments[1].trim();
+		} else {
+			var sourceText = null;
+		}
+		
+		var importanceLevel = splitSourceComments[0].match(/\#\!{1,4}/)
+		if(importanceLevel) {
+			var importanceCount = importanceLevel[0].length-1;
+			splitSourceComments[0] = splitSourceComments[0].replace(importanceLevel[0], "");
+		} else {
+			importanceCount = 0;
+		}
+		
+		var category = splitSourceComments[0].match(/\#[A-Za-z0-9\-]+/)
+		if(category) {
+			var categoryString = category[0].trim();
+			splitSourceComments[0] = splitSourceComments[0].replace(categoryString, "");
+		} else {
+			categoryString = null;
+		}
+		
+		var itemsToReturn = {
+			text : splitSourceComments[0].trim(),
+			importance : importanceCount,
+			sourceText : sourceText,
+			category : categoryString
+		}
+		return itemsToReturn;	
+	}
+	
 	
 	var gatherAnnotationsFromFolder = function(id, next) {
 		getAllNotes(function(allNotes) {
@@ -132,6 +179,7 @@ var mendeleyConnection = function() {
 		init : init,
 		setNextFunction : function(func) {
 			nextFunction = func;
-		}
+		},
+		processTextStr : processTexStringForHashTags
 	}
 }
