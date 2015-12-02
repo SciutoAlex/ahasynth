@@ -55,7 +55,8 @@ var mendeleyConnection = function() {
 			var documents = results[1];
 			var docIds = documents.map(function(doc) { return doc.id})
 			var folderSpecificAnnotations = allAnnotations.filter(function(note) { return docIds.indexOf(note.document_id) != -1 })
-			folderSpecificAnnotations = processTextInformationForAnnotations(folderSpecificAnnotations)
+			folderSpecificAnnotations = processTextInformationForAnnotations(folderSpecificAnnotations);
+			attachDocObjandAnnotationObj(documents, folderSpecificAnnotations);
 			setTimeout(function() {
 				nextFunction({
 					allAnnotations : allAnnotations,
@@ -69,12 +70,27 @@ var mendeleyConnection = function() {
 		});
 	}
 	
+	var attachDocObjandAnnotationObj = function(docs, notes) {
+		notes.map(function(note) {
+			docs.map(function(doc) {
+				if(doc.id == note.document_id) {
+					note.documentObj = doc
+					if(!doc.annotationObjs) {
+						doc.annotationObjs = [note]
+					} else {
+						doc.annotationObjs.push(note)
+					}
+				}
+			})
+		})
+	}
+	
 	var processTextInformationForAnnotations = function(folderSpecificAnnotations) {
 		return folderSpecificAnnotations.map(function(note) {
 			var processedInfo = processTexStringForHashTags(note.text)
 			note.category = processedInfo.category;
 			note.importance = processedInfo.importance;
-			note.annotations = processedInfo.text;
+			note.annotation = processedInfo.text;
 			note.source = processedInfo.sourceText;
 			return note;
 		})
