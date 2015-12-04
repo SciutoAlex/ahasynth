@@ -47,7 +47,19 @@
 			<div class="js-vizContainer" style="display:none">
 				<div class="row controls">
 					<div class="col-xs-12">
-						<h6 class="js-group-name"></h6>
+						<ul class="nav nav-pills coloring">
+							<li class="disabled" role="presentation" data-color="uncolored"><a href="#">Color</a></li>
+							<li role="presentation" data-color=""><a href="#">Uncolored</a></li>
+							<li role="presentation" data-color="document_id"><a href="#">Paper</a></li>
+							<li role="presentation" data-color="category"><a href="#">#Category</a></li>
+						</ul>
+						<ul class="nav nav-pills positioning">
+							<li class="disabled" role="presentation" data-color="uncolored"><a href="#">Layout</a></li>
+							<li class="layout" role="presentation" data-layout="paper"><a href="#">Paper</a></li>
+							<li class="layout" role="presentation" data-layout="category"><a href="#">#Category</a></li>
+							<li class="layout" role="presentation" data-layout="custom"><a href="#">Custom</a></li>
+							<li role="presentation" data-action="save_custom"><a href="#">Save Custom</a></li>
+						</ul>
 					</div>
 					<div class="row viz">
 						<div class="col-xs-12">
