@@ -1,5 +1,6 @@
 var visualization = function() {
 	var vizData;
+	var vizApp = this;
 
 	var padding = 30; // padding between groups
 	var max_group_width = 600;
@@ -13,11 +14,14 @@ var visualization = function() {
 
 	var arrayOfNotes = [];
 
-	var folderNameH6, vizContainer
+	var folderNameH6, vizContainer, colorButtons, layoutButtons, saveLayoutButton;
 
 	var init = function() {
 		folderNameH6 = $('.js-group-name');
 		vizContainer = $('.js-vizContainer');
+		colorButtons = $('.coloring li');
+		layoutButtons = $('.positioning .layout');
+		saveLayoutButton = $('li[data-action="save_custom"]').hide()
 	}
 
 	var setData = function(data) {
@@ -27,7 +31,6 @@ var visualization = function() {
 
 	var startViz = function() {
 		console.log(vizData);
-		console.log(folderNameH6);
 		vizContainer.fadeIn();
 		container_width = vizContainer.width();
 		max_groups_in_row = parseInt(container_width / max_group_width) + 1;
@@ -35,8 +38,21 @@ var visualization = function() {
 		vizData.folderSpecificAnnotations.map(createNote);
 
 		// TODO: should set type to be either 'topic' or 'papers', have separate thing for 'custom'
-		var grouping_type = 'topic';
-		setGroupPositions(arrayOfNotes, grouping_type);
+		setGroupPositions(arrayOfNotes, 'topic');
+
+		colorButtons.on('click', function() {
+			var cat = $(this).attr('data-color')
+			console.log(cat);
+			colorNotes(cat);
+		});
+
+		layoutButtons.on('click', function() {
+			var cat = $(this).attr('data-layout')
+			console.log(cat);
+			rearrangeNotes(cat);
+		});
+
+		saveLayoutButton.on('click', saveCustomLayout)
 	}
 
 	var setGroupPositions = function(notes, type) {
@@ -75,6 +91,8 @@ var visualization = function() {
 			groups[key]['posy'] += groups[group_above_key]['height'] + groups[group_above_key]['posy'];
 		}
 
+		console.log(groups);
+
 		// set note positions
 
 		left_order = 0; // order of groups in a row
@@ -98,7 +116,7 @@ var visualization = function() {
 				} else {
 					top = groups[category]['posy']  + (parseInt(i/2)*max_note_height)
 				}
-				note.setPosition(top,left);
+				note.position([top,left]);
 			}
 			left_order++;
 			if (left_order >= max_groups_in_row) {
@@ -108,11 +126,52 @@ var visualization = function() {
 	}
 
 	var createNote = function(noteObj) {
-		var newNotes = new Note(noteObj);
-		newNotes.setBackground(
+		var newNote = new Note(noteObj, vizApp, arrayOfNotes.length-1);
+		newNote.setBackground(
 			colorArray[Math.floor(Math.random()*colorArray.length)]);
+		arrayOfNotes.push(newNote);
+	}
 
-		arrayOfNotes.push(newNotes);
+
+	var rearrangeNotes = function(arrangement) {
+		if(arrangement == "custom") {
+			arrayOfNotes.map(function(note) {
+				var pos = note.customPosition();
+				note.position(pos);
+			});
+			saveLayoutButton.fadeOut();
+		} else {
+			arrayOfNotes.map(function(note) {
+				note.position([vizContainer.width()*Math.random(),vizContainer.height()*Math.random()]);
+			});
+		}
+	}
+
+	var colorNotes = function(criteria) {
+		if(criteria != "") {
+			var arrayOfCriteria = generateArrayOfAttributes(criteria, arrayOfNotes);
+			arrayOfNotes.map(function(note) {
+				var attr = note.getNoteAttr(criteria);
+				note.setBackground(colorArray[arrayOfCriteria.indexOf(attr)])
+			});
+		} else {
+			arrayOfNotes.map(function(note) {
+				note.setBackground('#eee')
+			});
+		}
+	}
+
+	var saveCustomLayout = function() {
+		arrayOfNotes.map(function(note) {
+			var pos = note.position();
+			note.customPosition(pos);
+		});
+		saveLayoutButton.fadeOut();
+	}
+
+	this.showSaveLayoutButton = function() {
+		console.log('save button')
+		saveLayoutButton.fadeIn();
 	}
 
 	return {
@@ -121,17 +180,38 @@ var visualization = function() {
 	}
 }
 
+function generateArrayOfAttributes(criteria, arrayOfNotes) {
+	var rawArray = arrayOfNotes.map(function(note) {
+		return note.getNoteAttr(criteria);
+	});
+
+	return rawArray.getUnique();
+}
+
+//http://stackoverflow.com/questions/1960473/unique-values-in-an-array
+Array.prototype.getUnique = function(){
+   var u = {}, a = [];
+   for(var i = 0, l = this.length; i < l; ++i){
+      if(u.hasOwnProperty(this[i])) {
+         continue;
+      }
+      a.push(this[i]);
+      u[this[i]] = 1;
+   }
+   return a;
+}
+
 var colorArray =
 [
-	"#EDDEDE",
-	"#EDE3DE",
-	"#EDE8DE",
-	"#EDEDDE",
-	"#E6EDDE",
-	"#E0EDDE",
-	"#DEEDE0",
-	"#DEEDE6",
-	"#DEEDEB",
-	"#DEEBED",
-	"#DEE6ED"
+	"#E1BEE7",
+	"#D1C4E9",
+	"#C5CAE9",
+	"#BBDEFB",
+	"#B2EBF2",
+	"#DCEDC8",
+	"#FFECB3",
+	"#D7CCC8",
+	"#CFD8DC",
+	"#FFCDD2",
+	"#F8BBD0"
 ]
