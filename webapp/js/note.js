@@ -1,5 +1,6 @@
 var Note = function(noteObj) {
 	var category = noteObj.category;
+	var paperid = noteObj.document_id;
 	var noteid = noteObj.id;
 	var sourceHTMLTemplate = $("#note-template").html();
 	var vizContainer = $(".viz > div");
@@ -30,6 +31,10 @@ var Note = function(noteObj) {
 		return category;
 	}
 
+	var getPaperId = function() {
+		return paperid;
+	}
+
 	var getId = function() {
 		return noteid;
 	}
@@ -51,6 +56,7 @@ var Note = function(noteObj) {
 		setBackground: setBackground,
 		setPosition: setPosition,
 		getCategory: getCategory,
+		getPaperId: getPaperId,
 		getId: getId
 	}
 
