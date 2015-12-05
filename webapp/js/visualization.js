@@ -159,11 +159,7 @@ var visualization = function() {
 			});
 			saveLayoutButton.fadeOut();
 		} else {
-<<<<<<< HEAD
-			setGroupPositions(arrayOfNotes, arrangement)
-=======
 			setGroupPositions(arrayOfNotes, arrangement);
->>>>>>> b690645db6a420c3790033d1e359fa017a445527
 		}
 	}
 
