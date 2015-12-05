@@ -37,8 +37,7 @@ var visualization = function() {
 
 		vizData.folderSpecificAnnotations.map(createNote);
 
-		// TODO: should set type to be either 'topic' or 'papers', have separate thing for 'custom'
-		setGroupPositions(arrayOfNotes, 'topic');
+		setGroupPositions(arrayOfNotes, 'category');
 
 		colorButtons.on('click', function() {
 			var cat = $(this).attr('data-color')
@@ -61,7 +60,7 @@ var visualization = function() {
 		var groups = {};
 		var category;
 		notes.map(function(note) {
-			if (type == 'topic') { // group by topic
+			if (type == 'category') { // group by topic
 				category = note.getCategory();
 			} else { // group by paper
 				category = note.getPaperId();
@@ -141,9 +140,7 @@ var visualization = function() {
 			});
 			saveLayoutButton.fadeOut();
 		} else {
-			arrayOfNotes.map(function(note) {
-				note.position([vizContainer.width()*Math.random(),vizContainer.height()*Math.random()]);
-			});
+			setGroupPositions(arrayOfNotes, arrangement);
 		}
 	}
 
@@ -164,6 +161,8 @@ var visualization = function() {
 	var saveCustomLayout = function() {
 		arrayOfNotes.map(function(note) {
 			var pos = note.position();
+			console.log("custom layout");
+			console.log(pos);
 			note.customPosition(pos);
 		});
 		saveLayoutButton.fadeOut();
