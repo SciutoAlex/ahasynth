@@ -2,12 +2,12 @@ var visualization = function() {
 	var vizData;
 	var vizApp = this;
 
-	var padding = 30; // padding between groups
+	var padding = 40; // padding between groups
 	var max_group_width = 600;
 
 	// TODO: this assumes fixed note width and height, potentially handle for importance of notes
-	var max_note_width = 250;
-	var max_note_height = 150;
+	var max_note_width = 240;
+	var max_note_height = 110;
 
 	var container_width;
 	var max_groups_in_row;
@@ -52,6 +52,7 @@ var visualization = function() {
 			});
 			$(this).css('zIndex', maxZ+1);
 		})
+
 		colorButtons.on('click', function() {
 			colorButtons.removeClass('active');
 			$(this).addClass('active');
@@ -148,16 +149,21 @@ var visualization = function() {
 		arrayOfNotes.push(newNote);
 	}
 
-
 	var rearrangeNotes = function(arrangement) {
 		if(arrangement == "custom") {
 			arrayOfNotes.map(function(note) {
 				var pos = note.customPosition();
+				console.log("rearrange custom ");
+				console.log(pos);
 				note.position(pos);
 			});
 			saveLayoutButton.fadeOut();
 		} else {
+<<<<<<< HEAD
 			setGroupPositions(arrayOfNotes, arrangement)
+=======
+			setGroupPositions(arrayOfNotes, arrangement);
+>>>>>>> b690645db6a420c3790033d1e359fa017a445527
 		}
 	}
 
@@ -178,6 +184,8 @@ var visualization = function() {
 	var saveCustomLayout = function() {
 		arrayOfNotes.map(function(note) {
 			var pos = note.position();
+			console.log("custom layout");
+			console.log(pos);
 			note.customPosition(pos);
 		});
 		saveLayoutButton.fadeOut();

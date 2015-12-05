@@ -42,19 +42,15 @@ var Note = function(noteObj, vizApp, i) {
 		return paperid;
 	}
 
-	var getId = function() {
-		return noteid;
-	}
-
 	var setBackground = function(color) {
 		console.log(color);
 		noteEl.find('.note').css('background', color)
 	}
 
 	var movePosition = function(arr) {
-		noteEl.animate({
-			left: arr[0],
-			top: arr[1]
+		$("#" + noteid).animate({
+			"top" : arr[0],
+			"left" : arr[1]
 		});
 	}
 
@@ -70,39 +66,20 @@ var Note = function(noteObj, vizApp, i) {
 
 	var customPositionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
+			console.log("has array? " + arr)
 			return customPositionData;
 		} else {
-			console.log(arr)
+			console.log("set custom pos " + arr);
 			customPositionData = arr;
 		}
 	}
 
 	var positionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
-			return [noteEl.css('left'),noteEl.css('top')];
+			return [noteEl.css('top'),noteEl.css('left')];
 		} else {
 			movePosition(arr);
 		}
-	}
-
-	var setPosition = function(top, left) {
-		// id to differentiate from other notes
-		$("#" + getId()).css({
-			"top" : top,
-			"left" : left
-		})
-	}
-
-	var getCategory = function() {
-		return category;
-	}
-
-	var getPaperId = function() {
-		return paperid;
-	}
-
-	var getId = function() {
-		return noteid;
 	}
 
 	function dragged() {
@@ -115,9 +92,7 @@ var Note = function(noteObj, vizApp, i) {
 		customPosition : customPositionGetSet,
 		position : positionGetSet,
 		getCategory: getCategory,
-		getPaperId: getPaperId,
-		setPosition: setPosition,
-		getId: getId
+		getPaperId: getPaperId
 	}
 
 }
