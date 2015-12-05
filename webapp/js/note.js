@@ -76,7 +76,7 @@ var Note = function(noteObj, vizApp, i) {
 
 	var positionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
-			return [noteEl.css('left'),noteEl.css('top')];
+			return [noteEl.css('top'),noteEl.css('left')];
 		} else {
 			movePosition(arr);
 		}
