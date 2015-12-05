@@ -38,6 +38,7 @@ var visualization = function() {
 		vizData.folderSpecificAnnotations.map(createNote);
 
 		setGroupPositions(arrayOfNotes, 'category');
+		saveCustomLayout();
 
 		colorButtons.on('click', function() {
 			var cat = $(this).attr('data-color')
@@ -51,7 +52,7 @@ var visualization = function() {
 			rearrangeNotes(cat);
 		});
 
-		saveLayoutButton.on('click', saveCustomLayout)
+		saveLayoutButton.on('click', saveCustomLayout);
 	}
 
 	var setGroupPositions = function(notes, type) {
@@ -135,8 +136,6 @@ var visualization = function() {
 		if(arrangement == "custom") {
 			arrayOfNotes.map(function(note) {
 				var pos = note.customPosition();
-				console.log("rearrange custom ");
-				console.log(pos);
 				note.position(pos);
 			});
 			saveLayoutButton.fadeOut();

@@ -18,7 +18,11 @@ var Note = function(noteObj, vizApp, i) {
 		scroll: true,
 		start: dragged
 	})
-	.attr("id", noteid)
+	.attr('id', noteid)
+	.css({
+		'top': 0,
+		'left': 0
+	})
 	.appendTo(vizContainer);
 
 	var sourceEl = noteEl.find('.source').hide();
@@ -49,6 +53,11 @@ var Note = function(noteObj, vizApp, i) {
 
 	var movePosition = function(arr) {
 		$("#" + noteid).animate({
+			'top' : arr[0],
+			'left' : arr[1]
+		});
+		// hack to guarantee that the pos is updated before getting it
+		$("#" + noteid).css({
 			"top" : arr[0],
 			"left" : arr[1]
 		});
@@ -66,17 +75,15 @@ var Note = function(noteObj, vizApp, i) {
 
 	var customPositionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
-			console.log("has array? " + arr)
 			return customPositionData;
 		} else {
-			console.log("set custom pos " + arr);
 			customPositionData = arr;
 		}
 	}
 
 	var positionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
-			return [noteEl.css('top'),noteEl.css('left')];
+			return [noteEl.css('top'), noteEl.css('left')];
 		} else {
 			movePosition(arr);
 		}
