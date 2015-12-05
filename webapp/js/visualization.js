@@ -14,7 +14,7 @@ var visualization = function() {
 
 	var arrayOfNotes = [];
 
-	var folderNameH6, vizContainer, colorButtons, layoutButtons, saveLayoutButton;
+	var folderNameH6, vizContainer, colorButtons, layoutButtons, saveLayoutButton, notes;
 
 	var init = function() {
 		folderNameH6 = $('.js-group-name');
@@ -37,16 +37,33 @@ var visualization = function() {
 
 		vizData.folderSpecificAnnotations.map(createNote);
 
-		setGroupPositions(arrayOfNotes, 'category');
+		setGroupPositions(arrayOfNotes, 'category', true);
 		saveCustomLayout();
 
+		notesEls = vizContainer.find('.ui-draggable');
+
+		notesEls.hover(function(){
+			var maxZ = 0;
+			notesEls.each(function() {
+				var index_current = parseInt($(this).css("zIndex"), 10);
+				if(index_current > maxZ) {
+					maxZ = index_current;
+				}
+			});
+			$(this).css('zIndex', maxZ+1);
+		})
+
 		colorButtons.on('click', function() {
+			colorButtons.removeClass('active');
+			$(this).addClass('active');
 			var cat = $(this).attr('data-color')
 			console.log(cat);
 			colorNotes(cat);
 		});
 
 		layoutButtons.on('click', function() {
+			layoutButtons.removeClass('active');
+			$(this).addClass('active');
 			var cat = $(this).attr('data-layout')
 			console.log(cat);
 			rearrangeNotes(cat);
@@ -55,7 +72,7 @@ var visualization = function() {
 		saveLayoutButton.on('click', saveCustomLayout);
 	}
 
-	var setGroupPositions = function(notes, type) {
+	var setGroupPositions = function(notes, type, start) {
 		// create a map representing a group:
 		// category:{'notes': [notes], 'height': height of a group based on num notes in group, 'posy': y position}
 		var groups = {};
@@ -71,7 +88,7 @@ var visualization = function() {
 			} else {
 				groups[category] = {'notes':[note], 'height': 0, 'posy': 0};
 			}
-		})
+		});
 
 		// create grid-positioning for groups
 		// determine the height of each by the number of notes in the group
@@ -116,7 +133,7 @@ var visualization = function() {
 				} else {
 					top = groups[category]['posy']  + (parseInt(i/2)*max_note_height)
 				}
-				note.position([top,left]);
+				note.position([top,left], start);
 			}
 			left_order++;
 			if (left_order >= max_groups_in_row) {

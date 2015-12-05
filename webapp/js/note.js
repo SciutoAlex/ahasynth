@@ -5,8 +5,7 @@ var Note = function(noteObj, vizApp, i) {
 	var noteObj = noteObj;
 	var category = noteObj.category;
 	var paperid = noteObj.document_id;
-	var noteid = noteObj.id;
-
+	noteObj.copyString = "(" + noteObj.documentObj.authors[0].last_name + " " + noteObj.documentObj.year + ")";
 	var customPositionData = [ vizContainer.height() * Math.random(),vizContainer.width() * Math.random()];
 
 	noteTemplate = Handlebars.compile(sourceHTMLTemplate);
@@ -17,11 +16,6 @@ var Note = function(noteObj, vizApp, i) {
 	.draggable({
 		scroll: true,
 		start: dragged
-	})
-	.attr('id', noteid)
-	.css({
-		'top': 0,
-		'left': 0
 	})
 	.appendTo(vizContainer);
 
@@ -38,6 +32,9 @@ var Note = function(noteObj, vizApp, i) {
 		sourceEl.slideUp();
 	})
 
+	new Clipboard(noteEl.find('.copy-button')[0]);
+
+
 	var getCategory = function() {
 		return category;
 	}
@@ -51,15 +48,17 @@ var Note = function(noteObj, vizApp, i) {
 		noteEl.find('.note').css('background', color)
 	}
 
-	var movePosition = function(arr) {
-		$("#" + noteid).animate({
-			'top' : arr[0],
-			'left' : arr[1]
-		});
-		// hack to guarantee that the pos is updated before getting it
-		$("#" + noteid).css({
+	var setPosition = function(arr) {
+		noteEl.css({
 			"top" : arr[0],
 			"left" : arr[1]
+		});
+	}
+
+	var movePosition = function(arr) {
+		noteEl.animate({
+			'top' : arr[0],
+			'left' : arr[1]
 		});
 	}
 
@@ -81,9 +80,11 @@ var Note = function(noteObj, vizApp, i) {
 		}
 	}
 
-	var positionGetSet = function(arr) {
+	var positionGetSet = function(arr, start) {
 		if (typeof arr == 'undefined') {
 			return [noteEl.css('top'), noteEl.css('left')];
+		} else if (start) {
+			setPosition(arr);
 		} else {
 			movePosition(arr);
 		}
