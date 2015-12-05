@@ -6,7 +6,7 @@ var Note = function(noteObj, vizApp, i) {
 	var category = noteObj.category;
 	var paperid = noteObj.document_id;
 	var noteid = noteObj.id;
-
+	noteObj.copyString = "(" + noteObj.documentObj.authors[0].last_name + " " + noteObj.documentObj.year + ")";
 	var customPositionData = [ vizContainer.height() * Math.random(),vizContainer.width() * Math.random()];
 
 	noteTemplate = Handlebars.compile(sourceHTMLTemplate);
@@ -33,6 +33,9 @@ var Note = function(noteObj, vizApp, i) {
 		sourceEl.stop();
 		sourceEl.slideUp();
 	})
+	
+	new Clipboard(noteEl.find('.copy-button')[0]);
+	
 
 	var getCategory = function() {
 		return category;
@@ -49,8 +52,8 @@ var Note = function(noteObj, vizApp, i) {
 
 	var movePosition = function(arr) {
 		$("#" + noteid).animate({
-			"top" : arr[0],
-			"left" : arr[1]
+			"top" : arr[1],
+			"left" : arr[0]
 		});
 	}
 

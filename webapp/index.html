@@ -6,6 +6,7 @@
 		<script src="js/libs/mendeley.js"></script>
 		<script src="js/libs/async.js"></script>
 		<script src="js/libs/handlebars.js"></script>
+		<script src="js/libs/clipboard.js"></script>
 		
 		<script src="js/mendeleyDataGather.js"></script>
 		<script src="js/visualization.js"></script>
@@ -46,13 +47,15 @@
 			</div>
 			<div class="js-vizContainer" style="display:none">
 				<div class="row controls">
-					<div class="col-xs-12">
+					<div class="col-xs-6">
 						<ul class="nav nav-pills coloring">
 							<li class="disabled" role="presentation" data-color="uncolored"><a href="#">Color</a></li>
 							<li role="presentation" data-color=""><a href="#">Uncolored</a></li>
 							<li role="presentation" data-color="document_id"><a href="#">Paper</a></li>
 							<li role="presentation" data-color="category"><a href="#">#Category</a></li>
 						</ul>
+					</div>
+					<div class="col-xs-6">
 						<ul class="nav nav-pills positioning">
 							<li class="disabled" role="presentation" data-color="uncolored"><a href="#">Layout</a></li>
 							<li class="layout" role="presentation" data-layout="paper"><a href="#">Paper</a></li>
@@ -73,7 +76,8 @@
 			<div class="note color-{{color}}">
 				<div class="meta-info">
 					<span class="category">{{category}}</span>
-					<span class="glyphicon glyphicon-info-sign source-button" aria-hidden="true"></span>
+					<span class="glyphicon glyphicon-info-sign source-button"></span>
+					<span class="text-right copy-button" data-clipboard-text="{{copyString}}">copy</span>
 				</div>
 				<h4>{{annotation}}</h4>
 				<div class="biblio">{{documentObj.title}}, {{documentObj.year}}</div>
