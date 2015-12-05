@@ -14,7 +14,7 @@ var visualization = function() {
 
 	var arrayOfNotes = [];
 
-	var folderNameH6, vizContainer, colorButtons, layoutButtons, saveLayoutButton;
+	var folderNameH6, vizContainer, colorButtons, layoutButtons, saveLayoutButton, notes;
 
 	var init = function() {
 		folderNameH6 = $('.js-group-name');
@@ -36,17 +36,33 @@ var visualization = function() {
 		max_groups_in_row = parseInt(container_width / max_group_width) + 1;
 
 		vizData.folderSpecificAnnotations.map(createNote);
-
+		saveCustomLayout();
 		// TODO: should set type to be either 'topic' or 'papers', have separate thing for 'custom'
 		setGroupPositions(arrayOfNotes, 'topic');
-
+		
+		notesEls = vizContainer.find('.ui-draggable');
+		
+		notesEls.hover(function(){
+			var maxZ = 0;
+			notesEls.each(function() {
+				var index_current = parseInt($(this).css("zIndex"), 10);
+				if(index_current > maxZ) {
+					maxZ = index_current;
+				}
+			});
+			$(this).css('zIndex', maxZ+1);
+		})
 		colorButtons.on('click', function() {
+			colorButtons.removeClass('active');
+			$(this).addClass('active');
 			var cat = $(this).attr('data-color')
 			console.log(cat);
 			colorNotes(cat);
 		});
 
 		layoutButtons.on('click', function() {
+			layoutButtons.removeClass('active');
+			$(this).addClass('active');
 			var cat = $(this).attr('data-layout')
 			console.log(cat);
 			rearrangeNotes(cat);
@@ -61,7 +77,7 @@ var visualization = function() {
 		var groups = {};
 		var category;
 		notes.map(function(note) {
-			if (type == 'topic') { // group by topic
+			if (type == 'category') { // group by topic
 				category = note.getCategory();
 			} else { // group by paper
 				category = note.getPaperId();
@@ -71,7 +87,7 @@ var visualization = function() {
 			} else {
 				groups[category] = {'notes':[note], 'height': 0, 'posy': 0};
 			}
-		})
+		});
 
 		// create grid-positioning for groups
 		// determine the height of each by the number of notes in the group
@@ -116,7 +132,7 @@ var visualization = function() {
 				} else {
 					top = groups[category]['posy']  + (parseInt(i/2)*max_note_height)
 				}
-				note.position([top,left]);
+				note.position([left,top]);
 			}
 			left_order++;
 			if (left_order >= max_groups_in_row) {
@@ -141,9 +157,7 @@ var visualization = function() {
 			});
 			saveLayoutButton.fadeOut();
 		} else {
-			arrayOfNotes.map(function(note) {
-				note.position([vizContainer.width()*Math.random(),vizContainer.height()*Math.random()]);
-			});
+			setGroupPositions(arrayOfNotes, arrangement)
 		}
 	}
 

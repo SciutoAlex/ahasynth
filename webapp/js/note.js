@@ -24,7 +24,7 @@ var Note = function(noteObj, vizApp, i) {
 	var sourceEl = noteEl.find('.source').hide();
 
 	noteEl.find('h4').css('font-size', calculatFontSize(noteObj.importance));
-
+	
 	noteEl.find('.source-button').hover(function() {
 		console.log('hover')
 		sourceEl.stop();
