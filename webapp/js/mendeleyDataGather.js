@@ -48,15 +48,26 @@ var mendeleyConnection = function() {
 		step2Container.hide();
 		step3Container.show();
 		var asyncTasks = []
+		
 		asyncTasks.push(getAllAnnotations)
 		asyncTasks.push(getIdsinFolder(group.id))
 		async.parallel(asyncTasks, function(err, results) {
 			var allAnnotations = results[0];
 			var documents = results[1];
 			var docIds = documents.map(function(doc) { return doc.id})
+			
+			//only select our folders annotations
 			var folderSpecificAnnotations = allAnnotations.filter(function(note) { return docIds.indexOf(note.document_id) != -1 })
+			
+			//eliminate any notes without text
+			folderSpecificAnnotations = folderSpecificAnnotations.filter(function(note) { return note.type == "sticky_note"; })
+			
+			//process the text into source text, comment text, importance level
 			folderSpecificAnnotations = processTextInformationForAnnotations(folderSpecificAnnotations);
+			
+			//provide references to documents from annotations and vice versa
 			attachDocObjandAnnotationObj(documents, folderSpecificAnnotations);
+			
 			setTimeout(function() {
 				nextFunction({
 					allAnnotations : allAnnotations,
@@ -87,6 +98,7 @@ var mendeleyConnection = function() {
 	
 	var processTextInformationForAnnotations = function(folderSpecificAnnotations) {
 		return folderSpecificAnnotations.map(function(note) {
+			console.log(note);
 			var processedInfo = processTexStringForHashTags(note.text)
 			note.category = processedInfo.category;
 			note.importance = processedInfo.importance;
@@ -97,6 +109,7 @@ var mendeleyConnection = function() {
 	}
 	
 	var processTexStringForHashTags = function(str) {
+	
 		var equalsList = str.match(/={4,}/)
 		splitSourceComments = str.split(equalsList);
 		if(splitSourceComments.length > 1) {
@@ -143,6 +156,7 @@ var mendeleyConnection = function() {
 	var getIdsinFolder = function(id) {
 		return function(next) {
 			MendeleySDK.API.documents.list({folderId : id}).done(function(docs) {
+					
 				totalCalls += docs.length;
 				var docIds = docs.map(function(doc) { return doc.id });
 				async.map(docIds, getDocData, next)
@@ -178,15 +192,16 @@ var mendeleyConnection = function() {
 	
 	var getNotes = function(allNotes, next) {
 		totalStoredNotes = MendeleySDK.API.annotations.count;
-		MendeleySDK.API.annotations.nextPage().done(function(notes) {
-			incrementProgressBar();
-			allNotes = allNotes.concat(notes)
-			if(totalStoredNotes !== allNotes.length) {
+		if(MendeleySDK.API.annotations.paginationLinks.next != false) {
+			MendeleySDK.API.annotations.nextPage().done(function(notes) {
+				incrementProgressBar();
+				allNotes = allNotes.concat(notes)
 				getNotes(allNotes, next);
-			} else {
-				next(null, allNotes)
-			}
-		})
+			});
+		} else {
+			next(null, allNotes)
+		}
+	
 	}
 
 
