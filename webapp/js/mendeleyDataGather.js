@@ -192,8 +192,12 @@ var mendeleyConnection = function() {
 	
 	var getNotes = function(allNotes, next) {
 		totalStoredNotes = MendeleySDK.API.annotations.count;
-		if(MendeleySDK.API.annotations.paginationLinks.next != false) {
+		console.log(allNotes.length)
+		console.log(totalStoredNotes)
+		console.log(MendeleySDK.API.annotations.paginationLinks)
+		if(MendeleySDK.API.annotations.paginationLinks.next != false && totalStoredNotes > allNotes.length) {
 			MendeleySDK.API.annotations.nextPage().done(function(notes) {
+				console.log(notes);
 				incrementProgressBar();
 				allNotes = allNotes.concat(notes)
 				getNotes(allNotes, next);
