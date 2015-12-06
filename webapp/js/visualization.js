@@ -36,12 +36,12 @@ var visualization = function() {
 		max_groups_in_row = parseInt(container_width / max_group_width) + 1;
 
 		vizData.folderSpecificAnnotations.map(createNote);
+
+		setGroupPositions(arrayOfNotes, 'category', true);
 		saveCustomLayout();
-		// TODO: should set type to be either 'topic' or 'papers', have separate thing for 'custom'
-		setGroupPositions(arrayOfNotes, 'topic');
-		
+
 		notesEls = vizContainer.find('.ui-draggable');
-		
+
 		notesEls.hover(function(){
 			var maxZ = 0;
 			notesEls.each(function() {
@@ -69,10 +69,10 @@ var visualization = function() {
 			rearrangeNotes(cat);
 		});
 
-		saveLayoutButton.on('click', saveCustomLayout)
+		saveLayoutButton.on('click', saveCustomLayout);
 	}
 
-	var setGroupPositions = function(notes, type) {
+	var setGroupPositions = function(notes, type, start) {
 		// create a map representing a group:
 		// category:{'notes': [notes], 'height': height of a group based on num notes in group, 'posy': y position}
 		var groups = {};
@@ -133,7 +133,7 @@ var visualization = function() {
 				} else {
 					top = groups[category]['posy']  + (parseInt(i/2)*max_note_height)
 				}
-				note.position([left,top]);
+				note.position([top,left], start);
 			}
 			left_order++;
 			if (left_order >= max_groups_in_row) {
@@ -153,8 +153,6 @@ var visualization = function() {
 		if(arrangement == "custom") {
 			arrayOfNotes.map(function(note) {
 				var pos = note.customPosition();
-				console.log("rearrange custom ");
-				console.log(pos);
 				note.position(pos);
 			});
 			saveLayoutButton.fadeOut();

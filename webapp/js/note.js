@@ -5,7 +5,6 @@ var Note = function(noteObj, vizApp, i) {
 	var noteObj = noteObj;
 	var category = noteObj.category;
 	var paperid = noteObj.document_id;
-	var noteid = noteObj.id;
 	noteObj.copyString = "(" + noteObj.documentObj.authors[0].last_name + " " + noteObj.documentObj.year + ")";
 	var customPositionData = [ vizContainer.height() * Math.random(),vizContainer.width() * Math.random()];
 
@@ -18,13 +17,12 @@ var Note = function(noteObj, vizApp, i) {
 		scroll: true,
 		start: dragged
 	})
-	.attr("id", noteid)
 	.appendTo(vizContainer);
 
 	var sourceEl = noteEl.find('.source').hide();
 
 	noteEl.find('h4').css('font-size', calculatFontSize(noteObj.importance));
-	
+
 	noteEl.find('.source-button').hover(function() {
 		console.log('hover')
 		sourceEl.stop();
@@ -33,9 +31,9 @@ var Note = function(noteObj, vizApp, i) {
 		sourceEl.stop();
 		sourceEl.slideUp();
 	})
-	
+
 	new Clipboard(noteEl.find('.copy-button')[0]);
-	
+
 
 	var getCategory = function() {
 		return category;
@@ -50,10 +48,17 @@ var Note = function(noteObj, vizApp, i) {
 		noteEl.find('.note').css('background', color)
 	}
 
+	var setPosition = function(arr) {
+		noteEl.css({
+			"top" : arr[0],
+			"left" : arr[1]
+		});
+	}
+
 	var movePosition = function(arr) {
-		$("#" + noteid).animate({
-			"top" : arr[1],
-			"left" : arr[0]
+		noteEl.animate({
+			'top' : arr[0],
+			'left' : arr[1]
 		});
 	}
 
@@ -69,17 +74,17 @@ var Note = function(noteObj, vizApp, i) {
 
 	var customPositionGetSet = function(arr) {
 		if (typeof arr == 'undefined') {
-			console.log("has array? " + arr)
 			return customPositionData;
 		} else {
-			console.log("set custom pos " + arr);
 			customPositionData = arr;
 		}
 	}
 
-	var positionGetSet = function(arr) {
+	var positionGetSet = function(arr, start) {
 		if (typeof arr == 'undefined') {
-			return [noteEl.css('left'),noteEl.css('top')];
+			return [noteEl.css('top'), noteEl.css('left')];
+		} else if (start) {
+			setPosition(arr);
 		} else {
 			movePosition(arr);
 		}
